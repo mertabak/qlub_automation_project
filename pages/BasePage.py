@@ -38,47 +38,52 @@ class BasePage:
     PERC_FIVE_AMOUNT = (By.XPATH, "//div[@class='MuiBox-root css-hk5mkc']")
     CHECKOUT_PAY_NOW = (By.XPATH, "//button[contains(@class, 'PayButtonElement_button__V8yic')]")
     PAYMENT_WAS_SUCCESSFUL = (By.XPATH, "//p[contains(@class, 'css-1dbb4wf')]")
-    FRAME = ((By.XPATH, "//iframe[contains(@src, 'elements-inner-payment-edc4a3b1feea16ee9b8e9917c9780645')]"))
+    FRAME = ((By.XPATH, "//iframe[contains(@src, 'elements-inner-payment-e')]"))
 
 
     # Clicks on an element identified by locator.
     def click_to_element(self, locator):
         try:
-            element = self.wait_element_for_presence(locator)
+            element = self.is_element_presence(locator)
             element.click()
-            logger.info(f"{locator} öğesine tıklandı.")
+            logger.info(f"Clicked on element: {locator}.")
         except NoSuchElementException as e:
-            logger.error(f"Hata: {e}")
+            logger.error(f"Error: {e}")
 
     # Waits for an element identified by locator to be clickable.
-    def wait_element_for_presence(self, locator):
+    def is_element_presence(self, locator):
         try:
             element = WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable(locator))
-            logger.info(f"{locator} öğesi bulundu.")
+            logger.info(f"Element found: {locator}.")
             return element
         except NoSuchElementException as e:
-            logger.error(f"Hata: {e}")
+            logger.error(f"Error: {e}")
 
     # Sends keys to an element identified by locator.
     def send_keys_to_element(self, locator, text):
         try:
-            element = self.wait_element_for_presence(locator)
+            element = self.is_element_presence(locator)
             element.send_keys(text)
-            logger.info(f"{text} metni {locator} öğesine gönderildi.")
+            logger.info(f"Text '{text}' sent to element: {locator}.")
         except NoSuchElementException as e:
-            logger.error(f"Hata: {e}")
+            logger.error(f"Error: {e}")
 
     # Switches to an iframe identified by frame_locator.
     def switch_to_iframe(self, frame_locator):
         try:
-            iframe = self.wait_element_for_presence(frame_locator)
+            iframe = self.is_element_presence(frame_locator)
             self.driver.switch_to.frame(iframe)
         except NoSuchElementException:
-            print("Iframe bulunamadı.")
+            print("Iframe not found.")
 
     # Scrolls the page downwards.
     def scroll_the_page(self):
-        time.sleep(2)
-        self.driver.execute_script("window.scroll(0, 300);")
+        try:
+            time.sleep(2)
+            self.driver.execute_script("window.scroll(0, 300);")
+            logger.info("Page scrolled downwards.")
+        except Exception as e:
+            logger.error(f"Error while scrolling: {e}")
+
 
 
